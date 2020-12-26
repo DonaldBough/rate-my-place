@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+  <style>
+    .container .row {
+      padding-top: 1rem;
+    }
+    @font-face {
+      font-family: syne;
+      src: url(Syne-Regular.ttf);
+    }
+    body {
+      font-family: syne, sans-serif;
+    }
+    h4 {
+      font-size: 1.3rem;
+      padding-top: 1rem;
+    }
+    input[type='radio'] {
+      transform: scale(1.2);
+    }
+    label {
+      padding: 0 15px 0 10px;
+      font-size: 26px;
+    }
+    .my-shadow {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+    .my-bottom-shadow {
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0), 0 3px 10px 0 rgba(0, 0, 0, 0.15);
+    }
+    .autocomplete-items {
+      position: absolute;
+      border: 1px solid #d4d4d4;
+      border-bottom: none;
+      border-top: none;
+      z-index: 99;
+      /*position the autocomplete items to be the same width as the container:*/
+      top: 100%;
+      left: 0;
+      right: 0;
+    }
+    .autocomplete-items div {
+      padding: 10px;
+      cursor: pointer;
+      background-color: #F7F7F7;
+      border-bottom: 1px solid #d4d4d4;
+    }
+    .autocomplete-items div:hover {
+      /*when hovering an item:*/
+      background-color: #e9e9e9;
+    }
+    .autocomplete-active {
+      /*when navigating through the items using the arrow keys:*/
+      background-color: DodgerBlue !important;
+      color: #ffffff;
+    }
+    .footer {
+      position: fixed;
+      float: right;
+      left: 0;
+      bottom: 0;
+      min-width: 62px;
+      text-align: center;
+    }
+  </style>
+  <title>Rate My Place 🏠</title>
+</head>
+  <body>
+    <nav class="navbar navbar-expand navbar-light my-bottom-shadow py-3" style="padding-left: 4.5rem;">
+      <div class="container">
+        <div class="row w-100 pt-0">
+
+            <a class="navbar-brand" href="/" style="color: #f07167;"><b>Rate My Place</b></a>
+            <ul class="navbar-nav pl-1">
+              <li class="nav-item">
+                <a class="nav-link active" href="index.html">Search</a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="rate.html">Rate</a>
+              </li>
+            </ul>
+            <!-- Search bar -->
+            <form class="form-inline d-none d-md-block pl-lg-5" style="width: 500px">
+              <div id="searchLocationField" class="input-group text-center">
+                <input id="addressSearch"
+                       type="search"
+                       class="form-control my-shadow"
+                       style="text-align:center; border-radius: 2rem;"
+                       placeholder="Search by address    🔎"
+                       aria-label="Search by address    🔎">
+              </div>
+            </form>
+          </div>
+      </div>
+    </nav>
+
+    <div class="container" style="padding-top: 1rem;">
+      <div class="row">
+        <!-- Input forms -->
+        <div class="col-6">
+            <div class="row">
+              <div class="col-12">
+                <h1 style="margin-bottom: 0;">Rate Your Place</h1>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div id="locationField">
+                  <input id="address" class="w-100 form-control" placeholder="Enter your place's address" type="text" required/>
+                  <div class="invalid-feedback">
+                    Please select an address from the google suggestions.
+                  </div>
+                </div>
+              </div>
+            </div>
+          <div class="row" style="padding-top: 1rem;">
+            <div class="col-12">
+              <hr>
+            </div>
+          </div>
+            <div class="row">
+              <div class="col-12">
+                <input type="radio" id="rented-apartment" name="place-purchase-type" class="pr-1" checked="checked">
+                <label for="rented-apartment" style="font-size: 16px;">I rented at this place</label>
+                <input type="radio" id="purchased-apartment" name="place-purchase-type" class="pr-1">
+                <label for="purchased-apartment" style="font-size: 16px;">I owned this place</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <form autocomplete="off">
+                  <input id="placeOwner" class="w-100 form-control" type="text" placeholder="Landlord/Management Company Name, if you know">
+                </form>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <h4>How would you rate the cleaniless?</h4>
+                <input  name="cleanliness" class="radio-button-rating" type="radio" id="1-cleanliness"><label>🤮</label>
+                <input  name="cleanliness" class="radio-button-rating" type="radio" id="2-cleanliness"><label>😫</label>
+                <input  name="cleanliness" class="radio-button-rating" type="radio" id="3-cleanliness"><label>😐</label>
+                <input  name="cleanliness" class="radio-button-rating" type="radio" id="4-cleanliness"><label>😊</label>
+                <input  name="cleanliness" class="radio-button-rating" type="radio" id="5-cleanliness"><label>🤩</label><br/>
+                <textarea id="cleanlinessComment" placeholder="Were there roaches bigger than rats? Was it spotless when you moved in?"
+                          class="form-control" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <h4>How responsive was maintenance?</h4>
+                <input name="maintenance" class="radio-button-rating" type="radio" id="1-maintenance"><label>🤮</label>
+                <input name="maintenance" class="radio-button-rating" type="radio" id="2-maintenance"><label>😫</label>
+                <input name="maintenance" class="radio-button-rating" type="radio" id="3-maintenance"><label>😐</label>
+                <input name="maintenance" class="radio-button-rating" type="radio" id="4-maintenance"><label>😊</label>
+                <input name="maintenance" class="radio-button-rating" type="radio" id="5-maintenance"><label>🤩</label><br/>
+                <textarea id="maintenanceComment" placeholder="Did it take forever to fix your fridge? Was maintenance pretty fast?"
+                          class="form-control" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <h4>How do you feel about the management staff?</h4>
+                <input name="management" class="radio-button-rating" type="radio" id="1-management"><label>🤮</label>
+                <input name="management" class="radio-button-rating" type="radio" id="2-management"><label>😫</label>
+                <input name="management" class="radio-button-rating" type="radio" id="3-management"><label>😐</label>
+                <input name="management" class="radio-button-rating" type="radio" id="4-management"><label>😊</label>
+                <input name="management" class="radio-button-rating" type="radio" id="5-management"><label>🤩</label><br/>
+                <textarea id="managementComment" placeholder="Were they helpful? Did they make everything really difficult?"
+                          class="form-control" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <h4>How were your neighbors?</h4>
+                <input name="neighbors"  class="radio-button-rating" type="radio" id="1-neighbors"><label>🤮</label>
+                <input name="neighbors"  class="radio-button-rating" type="radio" id="2-neighbors"><label>😫</label>
+                <input name="neighbors"  class="radio-button-rating" type="radio" id="3-neighbors"><label>😐</label>
+                <input name="neighbors"  class="radio-button-rating" type="radio" id="4-neighbors"><label>😊</label>
+                <input name="neighbors"  class="radio-button-rating" type="radio" id="5-neighbors"><label>🤩</label><br/>
+                <textarea id="neighborsComment" placeholder="Did the neighbors stay up until 4 am? Did they say hi and make life easier?"
+                          class="form-control" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <h4>Anything else to say about the place?</h4>
+                <textarea id="otherComment" placeholder="What would you tell your friend before the big move?"
+                          class="form-control" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="row justify-content-center mb-4">
+              <div class="col-12">
+                <button onclick="saveRating()" class="btn mr-1 px-4 py-2" style="background-color: #f07167; color: white;">Save and Share</button>
+              </div>
+            </div>
+          </div>
+
+        <!-- Info box on privacy and rating tips -->
+        <div class="col-6">
+            <div class="card my-shadow sticky-top" style="margin-top: 5rem; top: 5rem;">
+              <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                  <p>Write your review with peace of mind. We keep your reviews completely anonymous and will never share your info with this review.</p>
+                  <footer class="blockquote-footer">The Rate My Place Team</footer>
+                </blockquote>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="footer my-shadow">
+      <a class="btn btn-light" href="contact-us.html"  style="border-width: 1px; border-style: solid; border-color: lightgrey;">
+        Feedback & Contact
+      </a>
+    </div>
+
+    <!-- Sentry error tracking -->
+    <script
+        src="https://browser.sentry-cdn.com/5.23.0/bundle.tracing.min.js"
+        integrity="sha384-lSZkoLgJeNT+V/zBEZAchPik9VPNr9wvgAY6mwoMK5SO/cMsK/whVXKKdQOL1oiw"
+        crossorigin="anonymous"
+    ></script>
+
+    <script>
+      Sentry.init({
+        dsn: 'https://48f495f7ec7c4630adcff77bec6d5573@o448852.ingest.sentry.io/5430873',
+      });
+    </script>
+
+    <!-- Google Places autocomplete API -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDB_gGfPSi6pmQhRou2FCLWjBynZsEPfMU&libraries=places"></script>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="/__/firebase/7.19.0/firebase-app.js"></script>
+
+    <!-- Firebase products SDKs -->
+    <script src="/__/firebase/7.19.0/firebase-analytics.js"></script>
+    <script src="/__/firebase/7.19.0/firebase-database.js"></script>
+
+    <!-- Initialize Firebase -->
+    <script src="/__/firebase/init.js"></script>
+    <script>firebase.analytics();</script>
+
+    <!-- GeoFire -->
+    <script src="https://cdn.firebase.com/libs/geofire/5.0.1/geofire.min.js"></script>
+
+    <script src="my-autocomplete.js"></script>
+
+    <script>
+      let autocomplete;
+      initAutocomplete();
+
+      //Autocomplete bar in navbar
+      function initAutocomplete() {
+        autocomplete = new google.maps.places.Autocomplete(
+            document.getElementById("addressSearch"),
+            {
+              types: ["geocode", "establishment"],
+              componentRestrictions: {country: 'us'}
+            }
+        );
+        autocomplete.setFields(["geometry"]);
+        autocomplete.addListener("place_changed", onPlaceSearched);
+      }
+
+      function onPlaceSearched() {
+        const autocompletePlace = autocomplete.getPlace();
+        const lat = autocompletePlace.geometry.location.lat();
+        const long = autocompletePlace.geometry.location.lng();
+        //Navigate to the home, map page with that place id in the url param
+        window.location = `/?lat=${lat}&long=${long}`;
+      }
+
+    </script>
+
+    <script>
+      let addressFormAutocomplete;
+      let place = {}, owners = {};
+
+      //If place id is in url, load it from the db
+      const urlParams = new URLSearchParams(window.location.search);
+      const placeId = urlParams.get('id');
+      if (placeId) { getPlaceFromFirebase(placeId) }
+
+      initAddressFormAutocomplete();
+
+      initOwnerFormAutocomplete();
+
+      async function getPlaceFromFirebase(placeId) {
+        try {
+          place = await firebase.database().ref(`places/${placeId}`).once('value');
+          place = place.val();
+
+          if (!place) { return }
+          document.getElementById('address').value = place.address;
+        }
+        catch (error) {
+          console.error(error);
+        }
+      }
+
+      function initAddressFormAutocomplete() {
+        addressFormAutocomplete = new google.maps.places.Autocomplete(
+            document.getElementById("address"),
+            {
+              types: ["geocode", "establishment"],
+              componentRestrictions: {country: 'us'}
+            }
+        );
+        // Avoid paying for data that you don't need by restricting the set of
+        // place fields that are returned to just the address components.
+        addressFormAutocomplete.setFields(["formatted_address", "geometry", "place_id"]);
+        // When the user selects an address from the drop-down, populate the
+        // address fields in the form.
+        addressFormAutocomplete.addListener("place_changed", () => {
+          // Get the place details from the autocomplete object.
+          const autocompletePlace = addressFormAutocomplete.getPlace();
+          place = {};
+
+          place.address = autocompletePlace.formatted_address
+          place.placeId = autocompletePlace.place_id;
+          place.lat = autocompletePlace.geometry.location.lat();
+          place.long = autocompletePlace.geometry.location.lng();
+        });
+      }
+
+      async function initOwnerFormAutocomplete() {
+        try {
+          owners = await firebase.database().ref(`owners/`).once('value');
+          owners = owners.val();
+
+          if (!owners) {
+            console.log(`Got no owners for autocomplete form.`);
+            return
+          }
+
+          const ownerNames = Object.keys(owners).reduce((names, ownerId) => {
+            const owner = owners[ownerId];
+            names.push(owner.name);
+            return names;
+          }, []);
+
+          console.log(`Got ${ownerNames.length} owners for autocomplete form.`);
+          myAutocomplete(document.getElementById('placeOwner'), ownerNames);
+        }
+        catch (error) {
+          console.error(error);
+        }
+      }
+
+      async function saveRating() {
+        let rating = {}
+
+        //region get the values
+        if (!place || !place.address || !place.lat || !place.long) {
+          window.alert(`✋ Your address was empty or you didn't select a suggestion. Please enter the address again and select a suggestion.`);
+          return;
+        }
+        rating.address = place.address;
+        rating.placeId = place.placeId;
+        rating.lat = place.lat;
+        rating.long = place.long;
+        rating.epoch = Date.now();
+
+        if (document.getElementById('rented-apartment').checked) { rating.addressType = 'rented' }
+        else if (document.getElementById('purchased-apartment').checked) { rating.addressType = 'purchased' }
+
+        let ownerId;
+        const placeOwnerName = document.getElementById('placeOwner').value.trim();
+        if (placeOwnerName !== '') {
+          //user entered an owner
+          rating.placeOwner = placeOwnerName
+
+          //get the id of the owner
+          Object.keys(owners).forEach(id => {
+            const owner = owners[id];
+            if (owner.name.toLowerCase() === placeOwnerName.toLowerCase()) { ownerId = id }
+          });
+        }
+
+        //get the emoji radio button ratings
+        const radioButtonRatings = [...document.querySelectorAll('.radio-button-rating')];
+        radioButtonRatings.forEach(radioButtonRating => {
+          if (!radioButtonRating.checked) { return }
+
+          const ratingValue = Number.parseInt(radioButtonRating.id.substr(0, 1));
+          const category = radioButtonRating.id.substring(2, radioButtonRating.length);
+          rating[category] = ratingValue;
+        });
+        //end of emoji radio buttons
+
+        //get comments
+        const textAreaComments = [...document.querySelectorAll('textarea')];
+        textAreaComments.forEach(comment => {
+
+          const commentCategory = comment.id;
+          const commentText = comment.value;
+
+          if (commentText !== "") { rating[commentCategory] = commentText }
+        });
+
+        console.log(`rating: ${JSON.stringify(rating)}`);
+        //endregion end of getting values
+
+        /**
+         * create new rating under ratings/
+         * upsert place location, address, ratingId, ownerId and name, under places/
+         * upsert owner name and placeId under owners/
+         */
+        const newRatingId = firebase.database().ref().child('ratings').push().key;
+        const placeId = rating.placeId;
+        //user entered a new owner, get a new id
+        if (!!rating.placeOwner && !ownerId) { ownerId = firebase.database().ref().child('owners').push().key }
+
+        var updates = {};
+        updates[`/ratings/${newRatingId}`] = rating;
+        updates[`/places/${placeId}/ratings/${newRatingId}`] = true;
+        updates[`/places/${placeId}/address`] = place.address;
+        updates[`/places/${placeId}/epoch`] = Date.now();
+        updates[`/places/${placeId}/location`] = {
+          lat: rating.lat,
+          long: rating.long,
+        };
+        if (!!rating.placeOwner && !!ownerId) {
+          updates[`/owners/${ownerId}/name`] = placeOwnerName;
+          updates[`/owners/${ownerId}/epoch`] = Date.now();
+          updates[`/owners/${ownerId}/places/${placeId}`] = true;
+          updates[`/places/${placeId}/ownerId`] = ownerId;
+          updates[`/places/${placeId}/ownerName`] = placeOwnerName;
+        }
+
+        let didError = false;
+        try {
+          await firebase.database().ref().update(updates);
+        }
+        catch (error) {
+          window.alert(`❌ We ran into an error saving your rating. Make sure all required info is entered. Refresh the page and try again.`)
+          console.error(`Ran into an error: ${JSON.stringify(error)}`);
+          didError = true;
+        }
+        if (didError) { return }
+
+        //save each rating, place, and owner id in the geo fire by its lat/long
+        var geoFire = new geofire.GeoFire(firebase.database().ref().child('geofire'));
+        try {
+          let geoFireUpdate = {};
+
+          geoFireUpdate[newRatingId] = [rating.lat, rating.long];
+          geoFireUpdate[placeId] = [rating.lat, rating.long];
+          geoFireUpdate[ownerId] = [rating.lat, rating.long];
+
+          await geoFire.set(geoFireUpdate);
+          window.alert(`✅ Rating saved`);
+          window.location.reload();
+        }
+        catch(error) {
+          window.alert(`❌ We ran into an error saving your rating. Make sure all required info is entered. Refresh the page and try again.`)
+          console.error(`Ran into an error: ${JSON.stringify(error)}`);
+        }
+      }
+    </script>
+
+    <!-- Bootstrap js libs -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+  </body>
+</html>

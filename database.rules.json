@@ -1,0 +1,29 @@
+{
+  "rules": {
+    "places" : {
+      ".read" : true,
+      "$placeId" : {
+        ".write" : true
+      }
+    },
+    "ratings" : {
+      ".read" : true,
+      "$ratingId" : {
+        ".write" : true
+      }
+    },
+    "owners" : {
+      ".read" : true,
+      "$ownerId" : {
+        ".write" : true
+      }
+    },
+    "geofire": {
+      ".indexOn": "g",
+      ".read" : true,
+      "$id" : {
+        ".write" : true
+      }
+    }
+  }
+}

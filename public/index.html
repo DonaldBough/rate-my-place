@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <title>Rate My Place 🏠</title>
+    <style>
+      .my-shadow {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      }
+      .my-bottom-shadow {
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0), 0 3px 10px 0 rgba(0, 0, 0, 0.15);
+      }
+      @font-face {
+        font-family: syne;
+        src: url(Syne-Regular.ttf);
+      }
+      body {
+        font-family: syne, sans-serif;
+      }
+      .footer {
+        position: fixed;
+        float: right;
+        left: 0;
+        bottom: 0;
+        min-width: 62px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body class="h-100">
+    <nav class="navbar navbar-expand navbar-light my-bottom-shadow py-3" style="padding-left: 4.5rem;">
+      <div class="container">
+        <div class="row w-100 pt-0">
+
+          <a class="navbar-brand" href="/" style="color: #f07167;"><b>Rate My Place</b></a>
+          <ul class="navbar-nav pl-1">
+            <li class="nav-item">
+              <a class="nav-link active" href="index.html">Search</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="rate.html">Rate</a>
+            </li>
+          </ul>
+          <!-- Search bar -->
+          <form class="form-inline d-none d-md-block pl-lg-5" style="width: 500px">
+            <div id="searchLocationField" class="input-group text-center">
+              <input id="addressSearch"
+                     type="search"
+                     class="form-control my-shadow"
+                     style="text-align:center; border-radius: 2rem;"
+                     placeholder="Search by address    🔎"
+                     aria-label="Search by address    🔎">
+            </div>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+  <div class="container-fluid h-100">
+      <div class="row h-100">
+        <!-- Search column -->
+        <div class="col-4 px-4" style="background-color: white; margin-top: 2rem;">
+          <small id="searchResultDetails" class="text-muted">-</small>
+          <h2>Rated places nearby </h2>
+          <!-- Search results -->
+          <div id="searchResults" class="list-group" style="padding-top: 0.5rem;"></div>
+        </div>
+
+        <!-- Map column -->
+        <div class="col-8" style="padding: 0 0 0 0">
+          <div id="map" style="height: 100%; background-color: grey;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer my-shadow">
+      <a class="btn btn-light" href="contact-us.html"  style="border-width: 1px; border-style: solid; border-color: lightgrey;">
+        Feedback & Contact
+      </a>
+    </div>
+
+    <!-- Sentry error tracking -->
+    <script
+        src="https://browser.sentry-cdn.com/5.23.0/bundle.tracing.min.js"
+        integrity="sha384-lSZkoLgJeNT+V/zBEZAchPik9VPNr9wvgAY6mwoMK5SO/cMsK/whVXKKdQOL1oiw"
+        crossorigin="anonymous"
+    ></script>
+
+    <script>
+      Sentry.init({
+        dsn: 'https://48f495f7ec7c4630adcff77bec6d5573@o448852.ingest.sentry.io/5430873',
+      });
+    </script>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="/__/firebase/7.19.0/firebase-app.js"></script>
+
+    <!-- Firebase products SDKs -->
+    <script src="/__/firebase/7.19.0/firebase-analytics.js"></script>
+    <script src="/__/firebase/7.19.0/firebase-auth.js"></script>
+    <script src="/__/firebase/7.19.0/firebase-database.js"></script>
+
+    <!-- Initialize Firebase -->
+    <script src="/__/firebase/init.js"></script>
+    <script>firebase.analytics();</script>
+
+    <!-- GeoFire -->
+    <script src="https://cdn.firebase.com/libs/geofire/5.0.1/geofire.min.js"></script>
+
+    <!-- Google API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDB_gGfPSi6pmQhRou2FCLWjBynZsEPfMU&libraries=places"></script>
+
+    <script>
+      Date.prototype.toShortFormat = function() {
+
+        let monthNames =["Jan","Feb","Mar","Apr",
+          "May","Jun","Jul","Aug",
+          "Sep", "Oct","Nov","Dec"];
+
+        let day = this.getDate();
+
+        let monthIndex = this.getMonth();
+        let monthName = monthNames[monthIndex];
+
+        let year = this.getFullYear();
+
+        return `${monthName} ${day} ${year}`;
+      }
+    </script>
+
+    <script>
+      let uid, map, markersOnMap = [], autocomplete;
+      let totalRatings = 0;
+      let totalPlaces = 0;
+
+      initAutocomplete();
+      initMap();
+
+      // Initialize and add the map
+      async function initMap() {
+        let mapCenter = getMapCenter();
+
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 13,
+          center: mapCenter,
+          styles: [{
+            featureType: 'poi',
+            stylers: [{ visibility: 'off' }]  // Turn off points of interest.
+          }, {
+            featureType: 'transit.station',
+            stylers: [{ visibility: 'off' }]  // Turn off bus stations, train stations, etc.
+          }],
+          disableDoubleClickZoom: true,
+          streetViewControl: false,
+          mapTypeControlOptions: { mapTypeIds: [google.maps.MapTypeId.ROADMAP] },
+        });
+
+        await getAndDisplayPlaces(mapCenter);
+      }
+
+      function initAutocomplete() {
+        autocomplete = new google.maps.places.Autocomplete(
+            document.getElementById("addressSearch"),
+            {
+              types: ["geocode", "establishment"],
+              componentRestrictions: {country: 'us'}
+            }
+        );
+        autocomplete.setFields(["geometry"]);
+        autocomplete.addListener("place_changed", onPlaceSearched);
+      }
+
+      async function onPlaceSearched() {
+        //On autocomplete address click
+        const mapCenter = getMapCenter();
+        map.setCenter(mapCenter);
+
+        await getAndDisplayPlaces(mapCenter);
+      }
+
+      function getMapCenter() {
+        const nyc = {lat: 40.730610, lng: -73.935242};
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlLat = urlParams.get('lat');
+        const urlLong = urlParams.get('long');
+
+        const autocompletePlace = autocomplete.getPlace();
+        let searchedLocation;
+        if (autocompletePlace) {
+          searchedLocation = {
+            lat: autocompletePlace.geometry.location.lat(),
+            lng: autocompletePlace.geometry.location.lng()
+          }
+        }
+
+        let mapCenter;
+        if (searchedLocation) {
+          console.log('Using searched location for center');
+          mapCenter = searchedLocation;
+
+          window.localStorage['searchedPlaceInHomePage'] = JSON.stringify(mapCenter);
+          console.log(`Wrote the following to cache: ${JSON.stringify(mapCenter)}`);
+        }
+        else if (urlLat && urlLong) {
+          console.log('Using url params for map center');
+          mapCenter = {
+            lat: parseFloat(urlLat),
+            lng: parseFloat(urlLong)
+          };
+
+          window.localStorage['searchedPlaceInHomePage'] = JSON.stringify(mapCenter);
+          console.log(`Wrote the following to cache: ${JSON.stringify(mapCenter)}`);
+        }
+        else if (localStorage['searchedPlaceInHomePage']) {
+          console.log('Using cached location for map center')
+          mapCenter = JSON.parse(localStorage['searchedPlaceInHomePage']);
+        }
+        else {
+          console.log('Using default of NYC for map center');
+          mapCenter = nyc;
+        }
+        return mapCenter;
+      }
+
+      async function getAndDisplayPlaces(centerLatLong) {
+        //Get places
+        try {
+          //got formula from https://stackoverflow.com/questions/41481723/convert-google-map-zoom-level-into-km
+          const kmFromZoomLevel = 4000 / (2 ^ 13);
+          const geoFire = new geofire.GeoFire(firebase.database().ref().child('geofire'));
+          const geoQuery = geoFire.query({
+            center: [centerLatLong.lat, centerLatLong.lng],
+            radius: kmFromZoomLevel
+          });
+
+          //get places from geofire
+          const getPlacesRequests = []
+          const placeIds = [];
+          geoQuery.on("key_entered", (id, location, distance) => {
+            placeIds.push(id);
+            getPlacesRequests.push(
+                firebase.database().ref(`places/${id}`).once('value')
+            );
+          });
+
+          //all places have been loaded from geofire
+          geoQuery.on("ready", async () => {
+            console.log("GeoQuery has loaded and fired all other events for initial data");
+            await displayPlaces(getPlacesRequests, placeIds);
+          });
+        } catch (error) {
+          window.alert('❌ We had a problem loading places for this location. Try refreshing the page, making sure the url is right, or try again later.');
+          console.error(`Error loading ratings: ${error}`);
+        }
+      }
+
+      async function displayPlaces(getPlacesRequests, placeIds) {
+        //get places from the db under places/
+        const placesResults = await Promise.all(getPlacesRequests);
+        let places = [];
+        placesResults.forEach(place => places.push(place.val()));
+
+        //Remove and delete existing markers
+        markersOnMap.forEach(marker => {
+          marker.setMap(null);
+          marker = null;
+        });
+
+        document.getElementById('searchResults').innerHTML = ``;
+
+        //display place map marker and on the list
+        Object.keys(places).forEach(promiseIndex => {
+          promiseIndex = Number.parseInt(promiseIndex);
+          const place = places[promiseIndex];
+          if (!place) { return }
+          //We have to get place ids from this array because they're lost during the db request.
+          const placeId = placeIds[promiseIndex];
+
+          if (!place.location.lat || !place.location.long) {
+            console.error(`No lat or long for place id: ${id}`);
+            return;
+          }
+
+          //Create markers
+          const marker = new google.maps.Marker({
+            position: {lat: place.location.lat, lng: place.location.long},
+            animation: google.maps.Animation.DROP,
+            donaldsPlaceId: placeId,
+            map,
+            title: place.address
+          });
+
+          marker.addListener("click", function () {
+            const infowindow = new google.maps.InfoWindow({content: `<a href="place?id=${placeId}">${place.address}</a>`});
+            infowindow.open(map, marker);
+
+            map.addListener("click", function () {
+              infowindow.close();
+            });
+          });
+
+          markersOnMap.push(marker);
+
+          totalRatings += Object.keys(place.ratings).length;
+          const addressWithoutUSA = place.address.substring(0, place.address.indexOf(', USA'));
+
+          //Append place to search results list
+          document.getElementById('searchResults').insertAdjacentHTML('beforeend', `
+              <a href="place?id=${placeId}" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">🌟 ${Object.keys(place.ratings).length} ratings</h5>
+                  <h6 class="mb-1">${addressWithoutUSA}</h6>
+                </div>
+                <small class="text-muted">${new Date(place.epoch).toShortFormat()}</small>
+              </a>
+            `);
+        });
+
+        //display total number of places and ratings
+        totalPlaces = Object.keys(places).filter(id => !!places[id]).length;
+        document.getElementById('searchResultDetails').innerText =
+            `${totalPlaces} places · ${totalRatings} ratings`;
+      }
+    </script>
+
+    <!-- Bootstrap js libs -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+  </body>
+</html>

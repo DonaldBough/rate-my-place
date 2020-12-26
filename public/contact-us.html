@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <style>
+    .thin-grey-border {
+      border-radius: 2rem;
+      border-color: lightgrey;
+      border-width: 1px;
+      border-style: solid;
+    }
+    .large-greyed-out-text {
+      font-size: 32px;
+      opacity: 0.25;
+    }
+    .padded-evenly-spaced {
+      justify-content: space-between;
+      display: flex;
+      padding: 0 20px 0 20px;
+      width: 100%;
+    }
+    .my-shadow {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+    .my-bottom-shadow {
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0), 0 3px 10px 0 rgba(0, 0, 0, 0.15);
+    }
+    @font-face {
+      font-family: syne;
+      src: url(Syne-Regular.ttf);
+    }
+    body {
+      font-family: syne, sans-serif;
+    }
+    .footer {
+      position: fixed;
+      float: right;
+      left: 0;
+      bottom: 0;
+      min-width: 62px;
+      text-align: center;
+    }
+  </style>
+
+  <title>Rate My Place 🏠</title>
+</head>
+<body>
+<nav class="navbar navbar-expand navbar-light my-bottom-shadow py-3" style="padding-left: 4.5rem;">
+  <div class="container">
+    <div class="row w-100 pt-0">
+      <a class="navbar-brand" href="/" style="color: #f07167;"><b>Rate My Place</b></a>
+      <ul class="navbar-nav pl-1">
+        <li class="nav-item">
+          <a class="nav-link active" href="index.html">Search</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="rate.html">Rate</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container" style="padding-top: 3rem;">
+  <div class="row">
+    <div class="col-12">
+      <h1 style="margin-bottom: 0;">Feedback/Contact Us</h1>
+    </div>
+  </div>
+  <div class="row" style="padding-top: 1rem;">
+    <div class="col-12">
+      <div class="card bg-light">
+        <div class="card-body">
+          <blockquote class="blockquote mb-0">
+            <p>We're a small team still getting this thing up and running. If you have any feedback, business inquiries,
+              or found a bug please send an email to our developer (yup that's me) Donald Bough @
+              <a href="mailto:donaldbough@gmail.com?" target="_blank">donaldbough@gmail.com</a> and I'd love to work with you
+              from there.</p>
+            <p>Thanks!</p>
+
+            <a class="btn" href="mailto:donaldbough@gmail.com?" target="_blank" style="background-color: #f07167; color: white;">
+              <svg class="bi mr-1 pb-1" width="17" height="17">
+                <use xlink:href="bootstrap-icons-1.0.0/bootstrap-icons.svg#box-arrow-up-right"/>
+              </svg>
+              Open Email
+            </a>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sentry error tracking -->
+<script
+    src="https://browser.sentry-cdn.com/5.23.0/bundle.tracing.min.js"
+    integrity="sha384-lSZkoLgJeNT+V/zBEZAchPik9VPNr9wvgAY6mwoMK5SO/cMsK/whVXKKdQOL1oiw"
+    crossorigin="anonymous"
+></script>
+
+<script>
+  Sentry.init({
+    dsn: 'https://48f495f7ec7c4630adcff77bec6d5573@o448852.ingest.sentry.io/5430873',
+  });
+</script>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="/__/firebase/7.19.0/firebase-app.js"></script>
+
+<!-- Firebase products SDKs -->
+<script src="/__/firebase/7.19.0/firebase-analytics.js"></script>
+<script src="/__/firebase/7.19.0/firebase-database.js"></script>
+
+<!-- Initialize Firebase -->
+<script src="/__/firebase/init.js"></script>
+<script>firebase.analytics();</script>
+
+<!-- Bootstrap js libs -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</body>
+</html>
